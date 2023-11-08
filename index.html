@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Cores Primárias</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px;
+    }
+
+    li {
+      background-color: #fff;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Utensílios de Cozinha</h1>
+  <ul id="colorList">
+  </ul>
+  <button id="recarregar">Recarregar Lista</button>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // Carregar itens selecionados do localStorage
+      loadSelectedItems();
+
+      const cores = ["Papel Toalha (Cozinha)", "Papel toalha (Banheiros)", "Papel higiênico (Banheiros)", "Papel guardanapo", "Rolo de etiqueta", "Bobina de impressão", "Bobina de maquineta", "Bobina de porção 1kg (Pequena)", "Bobina de porção 3kg (Grande)", "Canudo de caipifruta (Grosso)", "Copo descartável", "Embalagem (P)", "Embalagem (M)", "Embalagem (Espetinho)", "Embalagem (Almoço)", "Sacola plástico (P)", "Sacola plástico (M)", "Sacola plástico (G)", "Saco ifood grande", "Saco ifood Pequeno", "Saco de lixo", "Sacola de talher", "Bloco de notas", "Alcool 70%", "Touca de cabelo", "Sabonete líquido (Banheiros)", "Palito de dente", "Sal (Sachê)", "Açúcar (Sachê)"];
+
+      // Crie automaticamente os itens da lista
+      cores.forEach(function (color) {
+        createListItem(color);
+      });
+
+      // Lidar com a remoção de itens
+      $('#colorList').on('click', '.removeBtn', function () {
+        const color = $(this).closest('li').data('color');
+        removeSelectedItem(color);
+        $(this).closest('li').hide();
+      });
+
+      // Lidar com o botão de recarga
+      $('#recarregar').click(function () {
+        $('#colorList li').show();
+      });
+
+      function createListItem(color) {
+        const listItem = $('<li>').data('color', color);
+        listItem.html(`<span>${color}</span><button class="removeBtn">Remover</button>`);
+        $('#colorList').append(listItem);
+        const selectedItems = getSelectedItems();
+        if (selectedItems.includes(color)) {
+          listItem.hide();
+        }
+      }
+
+      function removeSelectedItem(color) {
+        let selectedItems = getSelectedItems();
+        selectedItems = selectedItems.filter(item => item !== color);
+        saveSelectedItems(selectedItems);
+      }
+
+      function getSelectedItems() {
+        const storedItems = localStorage.getItem('selectedItems');
+        return storedItems ? JSON.parse(storedItems) : [];
+      }
+
+      function saveSelectedItems(items) {
+        localStorage.setItem('selectedItems', JSON.stringify(items));
+      }
+
+      function loadSelectedItems() {
+        const selectedItems = getSelectedItems();
+        $('#colorList li').each(function () {
+          const color = $(this).data('color');
+          if (selectedItems.includes(color)) {
+            $(this).hide();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
